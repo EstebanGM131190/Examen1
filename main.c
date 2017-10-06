@@ -48,27 +48,49 @@ void delay(uint16 delay);
 #define SW2_P  0
 #define SW3_P  1
 
+ void LED_COLOR(uint8 x){
+		if(FALSE == inputValue)
+		{
+			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
+			delay(65000);
+			GPIOB->PDOR |= 0x00400000;/**Read led off*/
+			delay(65000);
+			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+			delay(65000);
+			GPIOB->PDOR &= ~(0x00200000);/**Blue led on*/
+			delay(65000);
+			GPIOB->PDOR &= ~(0x00400000);/**Read led on*/
+			delay(65000);
+			GPIOE->PDOR &= ~(0x4000000);/**Green led on*/
+			delay(65000);
+			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
+			delay(65000);
+			GPIOB->PDOR |= 0x00400000;/**Read led off*/
+			delay(65000);
+			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+			delay(65000);
+		}
+
+	 return 0;
+ }
 
  typedef struct
  {
 	uint8 Estado;
  	void(*fptrPort)(uint8); //Colores
- 	uint8 SW_PRESSED[2];				//SW
+	uint8 SW_PRESSED[2];				//SW
  	uint8 next[5];
  }StateType;
 
  const StateType FSM_Moore[6]=
  		{
  				{VERDE,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
- 				{AZUL,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
- 				{MORADO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
- 				{ROJO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
- 				{AMARILLO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
+ 				{AZUL,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}},  /**Odd*/
+ 				{MORADO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
+ 				{ROJO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Odd*/
+ 				{AMARILLO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
 
  		};
-void LED_COLOR(){
-
-}
 int main(void) {
 	/**Variable to capture the input value*/
 	uint32 inputValue = 0;
@@ -101,33 +123,13 @@ int main(void) {
 //para usar los push buttons siempre se necesita activar los pull enable y el pull select
 //Slewrate es para dispositivo serial
 //ODE	Open Drain Enable.
-    while(1) {
+
+	while(1) {
     	/**Reads all the GPIOC*/
 		inputValue = GPIOC->PDIR;
 		/**Masks the GPIOC in the bit of interest*/
 		inputValue = inputValue & 0x40;
 		/**Note that the comparison is not inputValur == False, because it is safer if we switch the arguments*/
-		if(FALSE == inputValue)
-		{
-			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
-			delay(65000);
-			GPIOB->PDOR |= 0x00400000;/**Read led off*/
-			delay(65000);
-			GPIOE->PDOR |= 0x4000000;/**Green led off*/
-			delay(65000);
-			GPIOB->PDOR &= ~(0x00200000);/**Blue led on*/
-			delay(65000);
-			GPIOB->PDOR &= ~(0x00400000);/**Read led on*/
-			delay(65000);
-			GPIOE->PDOR &= ~(0x4000000);/**Green led on*/
-			delay(65000);
-			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
-			delay(65000);
-			GPIOB->PDOR |= 0x00400000;/**Read led off*/
-			delay(65000);
-			GPIOE->PDOR |= 0x4000000;/**Green led off*/
-			delay(65000);
-		}
     }
     return 0 ;
 }
