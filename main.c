@@ -47,15 +47,48 @@ void delay(uint16 delay);
 
 #define SW2_P  0
 #define SW3_P  1
-
+uint8 currentState = 0;
  void LED_COLOR(uint8 x){
-		if(FALSE == inputValue)
+		if(x == 0)
 		{
 			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
-			delay(65000);
 			GPIOB->PDOR |= 0x00400000;/**Read led off*/
-			delay(65000);
+			GPIOE->PDOR &= ~(0x4000000);/**Green led on*/
+		}
+		else if(x == 1)
+		{
+			GPIOB->PDOR &= ~(0x00200000);/**Blue led off*/
+			GPIOB->PDOR |= 0x00400000;/**Read led off*/
 			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+
+		}
+		else if(x == 2)
+		{
+			GPIOB->PDOR &= ~(0x00200000);/**Blue led off*/
+			GPIOB->PDOR &= ~(0x00400000);/**Read led off*/
+			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+
+		}
+		else if(x == 3)
+		{
+			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
+			GPIOB->PDOR &= ~(0x00400000);/**Read led off*/
+			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+
+		}
+		else if(x == 4)
+		{
+			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
+			GPIOB->PDOR &= ~(0x00400000);/**Read led off*/
+			GPIOE->PDOR &= ~(0x4000000);/**Green led off*/
+
+		}
+
+			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
+			GPIOB->PDOR |= 0x00400000;/**Read led off*/
+			GPIOE->PDOR |= 0x4000000;/**Green led off*/
+
+
 			delay(65000);
 			GPIOB->PDOR &= ~(0x00200000);/**Blue led on*/
 			delay(65000);
@@ -84,10 +117,10 @@ void delay(uint16 delay);
 
  const StateType FSM_Moore[6]=
  		{
- 				{VERDE,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
- 				{AZUL,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}},  /**Odd*/
- 				{MORADO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
- 				{ROJO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Odd*/
+ 				{VERDE,LED_COLOR,{SW2_P,SW3_P},{AZUL,MORADO,ROJO,AMARILLO,VERDE}}, /**Even*/
+ 				{AZUL,LED_COLOR,{SW2_P,SW3_P},{MORADO,ROJO,AMARILLO,VERDE, AZUL}},  /**Odd*/
+ 				{MORADO,LED_COLOR,{SW2_P,SW3_P},{ROJO,AMARILLO,VERDE, AZUL,MORADO}}, /**Even*/
+ 				{ROJO,LED_COLOR,{SW2_P,SW3_P},{AMARILLO,VERDE, AZUL,MORADO,ROJO}}, /**Odd*/
  				{AMARILLO,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
 
  		};
@@ -125,23 +158,17 @@ int main(void) {
 //ODE	Open Drain Enable.
 
 	while(1) {
+		FSM_Moore[currentState].fptrPort(FSM_Moore[currentState].Estado);
+
     	/**Reads all the GPIOC*/
 		inputValue = GPIOC->PDIR;
 		/**Masks the GPIOC in the bit of interest*/
 		inputValue = inputValue & 0x40;
-		/**Note that the comparison is not inputValur == False, because it is safer if we switch the arguments*/
+		if(FALSE == inputValue){			//SI SE PRESIONA EL SWITCH
+			currentState = FSM_Moore[currentState].next[currentState];
+		}
+
+
     }
     return 0 ;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// EOF
-////////////////////////////////////////////////////////////////////////////////
-void delay(uint16 delay)
-{
-	volatile uint16 counter;
-
-	for(counter=delay; counter > 0; counter--)
-	{
-	}
 }
