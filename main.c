@@ -84,25 +84,6 @@ uint8 currentState = 0;
 
 		}
 
-			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
-			GPIOB->PDOR |= 0x00400000;/**Read led off*/
-			GPIOE->PDOR |= 0x4000000;/**Green led off*/
-
-
-			delay(65000);
-			GPIOB->PDOR &= ~(0x00200000);/**Blue led on*/
-			delay(65000);
-			GPIOB->PDOR &= ~(0x00400000);/**Read led on*/
-			delay(65000);
-			GPIOE->PDOR &= ~(0x4000000);/**Green led on*/
-			delay(65000);
-			GPIOB->PDOR |= 0x00200000;/**Blue led off*/
-			delay(65000);
-			GPIOB->PDOR |= 0x00400000;/**Read led off*/
-			delay(65000);
-			GPIOE->PDOR |= 0x4000000;/**Green led off*/
-			delay(65000);
-		}
 
 	 return 0;
  }
