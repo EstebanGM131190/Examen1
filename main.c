@@ -39,6 +39,36 @@ void delay(uint16 delay);
 /*
  * @brief   Application entry point.
  */
+#define VERDE 0
+#define AZUL  1
+#define MORADO 2
+#define ROJO  3
+#define AMARILLO  4
+
+#define SW2_P  0
+#define SW3_P  1
+
+
+ typedef struct
+ {
+	uint8 Estado;
+ 	void(*fptrPort)(uint8); //Colores
+ 	uint8 SW_PRESSED[2];				//SW
+ 	uint8 next[5];
+ }StateType;
+
+ const StateType FSM_Moore[6]=
+ 		{
+ 				{VERDE,LED_COLOR,{SW2_P,SW3_P},{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
+ 				{AZUL,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
+ 				{MORADO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}, /**Even*/
+ 				{ROJO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
+ 				{AMARILLO,GPIO_writePORT,{SW2_P,SW3_P},delay,{VERDE, AZUL,MORADO,ROJO,AMARILLO}}  /**Odd*/
+
+ 		};
+void LED_COLOR(){
+
+}
 int main(void) {
 	/**Variable to capture the input value*/
 	uint32 inputValue = 0;

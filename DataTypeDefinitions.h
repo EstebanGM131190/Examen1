@@ -9,6 +9,8 @@
 #define DATATYPEDEFINITIONS_H_
 
 
+
+
 /*! This definition is as a general definitions to bits in regiter or pins in the microcontroller.*/
 typedef enum {BIT0,  /*!< Bit 0 */
 			  BIT1,  /*!< Bit 1 */
